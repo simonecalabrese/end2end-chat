@@ -78,6 +78,7 @@ export class UserService {
           username: user.username,
           public_key: reqUser.public_key,
           confirmed: false,
+          hasInvited: false,
           created_at: new Date()
         }
       }})
@@ -89,6 +90,7 @@ export class UserService {
         username: receiver.username,
         public_key: receiver.public_key,
         confirmed: false,
+        hasInvited: true,
         created_at: new Date()
       }
       res.friends.push(friend)
@@ -100,19 +102,22 @@ export class UserService {
 
   async acceptInvite(body, user) {
     let receiver = await this.userModel.findOne({username: body.username})
+    let userInReceiverFriends = receiver.friends.find(el => el.username == user.username)
     if(receiver == null) {
       return {message: "Can't find a user with that username", error: true}
     }
-    //RESOLVE THAT ADMIN CAN ACCEPT HIS INVITE
-    else if(receiver.friends.find(el => el.username == user.username) === undefined) {
+    else if(userInReceiverFriends.hasInvited === false) {
+      return {message: "Can't auto-accept your invite", error:true}
+    }
+    else if(userInReceiverFriends === undefined) {
       return {message: "That user has never invited you.", error: true}
     }
-    else if(receiver.friends.find(el => el.username == user.username).confirmed === true) {
+    else if(userInReceiverFriends.confirmed === true) {
       return {message: "You are already friends!", error: true}
     }
     else {
       //Update receiver's friends
-      receiver.friends.find(el => el.username == user.username).confirmed = true
+      userInReceiverFriends.confirmed = true
       receiver.markModified('friends');
       await receiver.save()
 

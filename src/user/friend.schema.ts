@@ -18,6 +18,9 @@ export class Friend {
   @Prop({required: true, default: false})
   confirmed: boolean;
 
+  @Prop({required: true})
+  hasInvited: boolean;
+
   @Prop({default: new Date()})
   created_at: Date;
 
