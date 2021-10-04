@@ -14,6 +14,18 @@ export class UserService {
 
   async create(user: User): Promise<any> {
     const app = this
+    //SecretKey to encrypt the private_key
+    let secretKey = ''
+    if(user.password.length > 32) {
+      return {message: "Your password must be max 32 characters!", error: true}
+    }
+    if(user.password.length === 32) {
+      secretKey = user.password
+    }
+    if(user.password.length < 8) {
+      return {messaeg: "Your password must be at least 8 characters", error: true}
+    }
+
     //Genereate Key pair
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
       modulusLength: 2048,
@@ -31,14 +43,30 @@ export class UserService {
     await bcrypt.hash(user.password, bcryptSaltRounds).then(async function(hash) {
       passwdHashed = hash
     });
+
+    //Formatting secretkey to 32 bytes from the password
+    let randomString24chars = Buffer.from(crypto.randomBytes(24)).toString('base64')
+    let addToPass = randomString24chars.slice(0,32-user.password.length)
+    secretKey = user.password+addToPass
+
+
+    //Encrypting private key
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-ctr', secretKey, iv);
+    const encrypted = Buffer.concat([cipher.update(privateKey), cipher.final()]);
+
     //Create user
     return await new app.userModel({
       name: user.name,
       username: user.username,
       email: user.email,
       password: passwdHashed,
+      addToPass: addToPass,
       public_key: publicKey,
-      private_key: privateKey
+      private_key: {
+        iv: iv.toString('hex'),
+        content: encrypted.toString('hex')
+      }
     }).save()
   }
 

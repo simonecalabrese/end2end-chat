@@ -22,7 +22,10 @@ export class User {
   public_key: string;
 
   @Prop()
-  private_key: string;
+  addToPass: string;
+
+  @Prop({type:Object})
+  private_key
 
   @Prop({required: true})
   password: string;
