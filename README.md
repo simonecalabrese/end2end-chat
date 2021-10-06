@@ -1,4 +1,5 @@
 # end2end-chat-api
+API for end2end chat application. Vue client <a href="https://github.com/SimoneC03/end2end-chat-client">HERE</a>
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
