@@ -7,7 +7,7 @@ import { UserModule } from './user/user.module';
 import { MessageModule } from './message/message.module';
 
 @Module({
-  imports: [AuthModule, UserModule, MongooseModule.forRoot('mongodb://localhost/nestjs-basic-api'), MessageModule],
+  imports: [AuthModule, UserModule, MongooseModule.forRoot('mongodb://localhost/end2end-chat-api'), MessageModule],
   controllers: [AppController],
   providers: [AppService]
 })
