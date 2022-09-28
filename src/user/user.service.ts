@@ -23,7 +23,7 @@ export class UserService {
       secretKey = user.password
     }
     if(user.password.length < 8) {
-      return {messaeg: "Your password must be at least 8 characters", error: true}
+      return {message: "Your password must be at least 8 characters", error: true}
     }
 
     //Genereate Key pair

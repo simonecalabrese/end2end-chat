@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
     
     socket.on('User connected', user => {
       currentUser = user;
-      users[user] = socket.id;
+      users[user.username] = socket.id;
       socket.broadcast.emit('User connected', user);
     });
 
@@ -39,7 +39,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on("private message", msg => {
-      console.log(msg)
       io.to(users[msg.receiver]).emit("private message", msg);
     });
 
