@@ -45,6 +45,10 @@ io.on('connection', (socket) => {
     socket.on("private typing", receiver => {
       io.to(users[receiver]).emit("private typing", receiver);
     });
+
+    socket.on("invite", msg => {
+      io.to(users[msg.username]).emit("invite", msg);
+    });
 });
 
 
