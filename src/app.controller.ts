@@ -34,4 +34,9 @@ export class AppController {
     return this.userService.findOne({username:req.user.username});
   }
 
+  @Get('/')
+  getHome() {
+    return this.appService.getHello();
+  }
+
 }
