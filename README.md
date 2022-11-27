@@ -3,7 +3,7 @@ Simple end2end chat application made In October 2021
 
 ## Requirements
 You should have installed:
-  - [Node](https://nodejs.org/it/download/) (18.12.1 recommended)
+  - [Node](https://nodejs.org/it/download/)
   - [Yarn](https://yarnpkg.com/) (or [NPM](https://docs.npmjs.com/cli/))
   - [MongoDB](https://www.mongodb.com/)
 
