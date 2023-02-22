@@ -17,7 +17,7 @@ yarn
 yarn start
 
 # starting socket.io server (real-time communication)
-cd socketio-server
+cd api/socketio-server
 yarn
 yarn start
 
