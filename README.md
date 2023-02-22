@@ -21,7 +21,7 @@ cd api/socketio-server
 yarn
 yarn start
 
-#starting vue client
+# starting vue client
 cd client
 yarn
 yarn dev
