@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "nest-typescript-api",
   "private": true,
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "Nest TypeScript api",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",

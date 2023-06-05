@@ -21,7 +21,6 @@ export default {
 
     //login check
     if(app.user == null || app.user == 'null') {
-      console.log(app.user)
       app.$router.push({name: 'Login'})
     }
 

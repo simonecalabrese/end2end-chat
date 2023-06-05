@@ -1,6 +1,6 @@
 <template>
   <div class="chat bg-gray-900 h-screen pt-6">
-    <div :class="{'loading-overlay relative overflow-y-hidden': pageLoading}"
+    <div :class="{ 'loading-overlay relative overflow-y-hidden': pageLoading }"
       class="chat-container w-12/12 md:w-10/12 lg:w-8/12 overflow-y-auto overflow-x-hidden relative rounded-xl shadow-xl mx-auto bg-gray-700">
       <div class="overflow-y-auto p-4 messages_list" ref="messageList">
         <div v-if="pageLoading" class="z-50 h-full relative flex flex-col items-center">
@@ -14,7 +14,7 @@
         </div>
         <div v-for="(el, index) in messages" :key="index" class="flex flex-row">
           <div
-            :class="{'message p-3 rounded shadow-sm text-sm m-2 max-w-xs lg:max-w-lg': true, 'ml-auto mr-0': el.author == user.username, 'ml-0 mr-auto': el.author == receiverSelected.username}"
+            :class="{ 'message p-3 rounded shadow-sm text-sm m-2 max-w-xs lg:max-w-lg': true, 'ml-auto mr-0': el.author == user.username, 'ml-0 mr-auto': el.author == receiverSelected.username }"
             v-if="(el.copy === true && el.author === user.username) || (el.copy === false && el.author === receiverSelected.username)">
             <span v-html="el.text" class="block"></span>
             <span v-html="new Date(el.created_at).toLocaleTimeString()" class="text-gray-500"></span>
@@ -24,8 +24,8 @@
       <div
         class="input container absolute bottom-0 right-0 left-0 bg-gray-800 p-3 flex flex-row justify-center align-middle items-center"
         style="max-width:unset!important">
-        <p :class="{'text-sm mr-2 text-gray-400':true, 'text-red-400':messageToSend.length > maxMessageLength}"
-          v-html="messageToSend.length+'/'+maxMessageLength"></p>
+        <p :class="{ 'text-sm mr-2 text-gray-400': true, 'text-red-400': messageToSend.length > maxMessageLength }"
+          v-html="messageToSend.length + '/' + maxMessageLength"></p>
         <input type="text" max="190"
           class="shadow-lg rounded bg-gray-600 text-gray-200 p-3 inline-block w-11/12 focus:outline-none"
           v-model="messageToSend" @keyup.enter="sendMessage()" @keydown="typing()">
@@ -99,19 +99,20 @@ export default {
       const app = this
       app.socket.emit('User connected', { username: app.user.username, id: app.user._id })
       console.log("Initializing socket listeners")
-      //Receive private message
+      // receive private message
       app.socket.on('private message', async (msg) => {
         try {
           let res = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, app.privateKeyFormatted, app.Buffer.from(msg.text, 'base64'))
           msg.text = app.Buffer.from(res).toString()
           app.messages.push(msg)
+          setTimeout(() => app.$refs.messageList.scrollTop = app.$refs.messageList.clientHeight + 99999, 100)
         }
         catch {
           console.log(".")
         }
       })
 
-      //Typing
+      // typing event
       app.socket.on('private typing', (test) => {
         app.typingStatus = true;
         clearTimeout(app.tout);
@@ -137,10 +138,9 @@ export default {
         })
 
         if (res.data.error == undefined && res.data.error != true) {
-          //To receiver through Socket.io
+          // send to receiver through Socket.io
           app.socket.emit('private message', res.data.mex)
 
-          //IN LOCAL ONLY!!
           let mex = res.data.copy
           mex.text = app.messageToSend
           app.messages.push(mex)
@@ -189,7 +189,7 @@ export default {
           ["decrypt"]
         )
 
-        //Saving formatted imported private key
+        // saving formatted imported private key
         app.privateKeyFormatted = res
         app.messages.forEach(async el => {
           try {
@@ -221,11 +221,8 @@ export default {
       // base64 decode the string to get the binary data
       //let pemlength = pemContents.length
       //const binaryDerString = window.atob(pemContents.substr(0,pemlength-1));
-      // console.log(binaryDerString)
       // // convert from a binary string to an ArrayBuffer
       // const binaryDer = app.str2ab(binaryDerString);
-      // console.log(binaryDer)
-      // console.log(Buffer.from(pemContents, 'base64').buffer)
       try {
         const res = await window.crypto.subtle.importKey(
           "spki",

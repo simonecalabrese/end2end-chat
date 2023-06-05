@@ -27,8 +27,8 @@
             <div class="hidden sm:block sm:ml-6">
               <div class="flex space-x-4">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <router-link :to="{name: 'Friends'}"
-                  :class="{'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium':true, 'bg-gray-900 text-white':$route.name=='Friends'}"
+                <router-link :to="{ name: 'Friends' }"
+                  :class="{ 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium': true, 'bg-gray-900 text-white': $route.name == 'Friends' }"
                   aria-current="page" @click="dropdown = false" v-if="Object.keys(user).length > 0">Friends
                 </router-link>
                 <!-- <router-link :to="{name: 'Chat'}" :class="{'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium':true, 'bg-gray-900 text-white':$route.name=='Chat'}" @click="dropdown = false" v-if="Object.keys(user).length > 0">Chat</router-link> -->
@@ -39,21 +39,21 @@
             <!-- Profile dropdown -->
             <div class="ml-3 relative z-50">
               <div>
-                <router-link :to="{name: 'Register'}" v-if="Object.keys(user).length == 0"
-                  :class="{'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium':true, 'bg-gray-900 text-white':$route.name=='Register'}"
+                <router-link :to="{ name: 'Register' }" v-if="Object.keys(user).length == 0"
+                  :class="{ 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium': true, 'bg-gray-900 text-white': $route.name == 'Register' }"
                   @click="dropdown = false">Register</router-link>
-                <router-link :to="{name: 'Login'}" v-if="Object.keys(user).length == 0"
-                  :class="{'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium':true, 'bg-gray-900 text-white':$route.name=='Login'}"
+                <router-link :to="{ name: 'Login' }" v-if="Object.keys(user).length == 0"
+                  :class="{ 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium': true, 'bg-gray-900 text-white': $route.name == 'Login' }"
                   @click="dropdown = false">Login</router-link>
 
                 <button v-if="Object.keys(user).length > 0" type="button" @mouseover="dropdown = true"
                   class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                   id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                   <span class="sr-only">Open user menu</span>
-                  <router-link :to="{name: 'Account'}" v-html="user.username"
+                  <router-link :to="{ name: 'Account' }" v-html="user.username"
                     class="text-gray-200 text-base my-auto mx-2 align-middle"></router-link>
                   <img class="h-8 w-8 rounded-full"
-                    :src="'https://avatars.dicebear.com/api/gridy/'+user.username+'.svg'" alt="">
+                    :src="'https://avatars.dicebear.com/api/gridy/' + user.username + '.svg'" alt="">
                 </button>
 
               </div>
@@ -62,12 +62,12 @@
                 role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1"
                 v-show="dropdown">
                 <!-- Active: "bg-gray-100", Not Active: "" -->
-                <router-link :to="{name: 'Account'}"
-                  class="inline-block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-500"
-                  role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</router-link>
+                <router-link :to="{ name: 'Account' }"
+                  class="inline-block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-500" role="menuitem"
+                  tabindex="-1" id="user-menu-item-0">Your Profile</router-link>
                 <button @click="logout"
-                  class="inline-block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-500"
-                  role="menuitem" tabindex="-1" id="user-menu-item-1">Log out</button>
+                  class="inline-block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-500" role="menuitem"
+                  tabindex="-1" id="user-menu-item-1">Log out</button>
               </div>
             </div>
           </div>
@@ -75,16 +75,19 @@
       </div>
 
       <!-- Mobile menu, show/hide based on menu state. -->
-      <div :class="{'sm:hidden': true, 'block':menuDropdown, 'hidden': !menuDropdown}" id="mobile-menu">
+      <div :class="{ 'sm:hidden': true, 'block': menuDropdown, 'hidden': !menuDropdown }" id="mobile-menu">
         <div class="px-2 pt-2 pb-3 space-y-1">
-          <router-link :to="{name: 'Friends'}"
-            :class="{'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium':true, 'bg-gray-900 text-white': $route.name == 'Friends'}"
+          <router-link :to="{ name: 'Friends' }"
+            :class="{ 'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium': true, 'bg-gray-900 text-white': $route.name == 'Friends' }"
             @click="dropdown = false" v-if="Object.keys(user).length > 0">Friends</router-link>
           <!-- <router-link :to="{name: 'Chat'}" :class="{'text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium':true, 'bg-gray-900 text-white': $route.name == 'Chat'}" @click="dropdown = false" v-if="Object.keys(user).length > 0">Chat</router-link> -->
         </div>
       </div>
     </nav>
     <router-view />
+    <footer>
+      <p class="text-sm">made by <a href="https://github.com/simonecalabrese" target="_blank"><b>Simone Calabrese</b></a></p>
+    </footer>
   </div>
 </template>
 
@@ -140,7 +143,7 @@ export default {
         localStorage.setItem('user', JSON.stringify(res.data))
         this.user = res.data
       }).catch(e => {
-        if(e.response.status === 401) {
+        if (e.response.status === 401) {
           this.logout()
         }
         else if (e.response.status !== 401 && (!access_token || !privk || !user)) {
@@ -151,3 +154,16 @@ export default {
   }
 }
 </script>
+
+<style>
+footer {
+  position: fixed;
+  bottom: 0;
+  padding: .2rem .5rem;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, .5);
+  backdrop-filter: blur(1px);
+  color: white;
+}
+</style>
