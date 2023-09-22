@@ -4,15 +4,15 @@
     <div @keyup.enter="login"
       class="flex flex-col w-11/12 md:w-5/12 lg:w-3/12 bg-gray-700 rounded-lg shadow-lg p-8 m-auto">
       <input type="text" v-model="name" class="bg-gray-600 shadow rounded text-gray-200 p-3 m-1 focus:outline-none"
-        placeholder="Name" autofocus>
+        placeholder="Name*" autofocus>
       <input type="email" v-model="email" class="bg-gray-600 shadow rounded text-gray-200 p-3 m-1 focus:outline-none"
-        placeholder="Email">
+        placeholder="Email*">
       <input type="text" v-model="username" class="bg-gray-600 shadow rounded text-gray-200 p-3 m-1 focus:outline-none"
-        placeholder="Username">
+        placeholder="Username*">
       <input type="password" v-model="password"
-        class="bg-gray-600 shadow rounded text-gray-200 p-3 m-1 focus:outline-none" placeholder="Password">
+        class="bg-gray-600 shadow rounded text-gray-200 p-3 m-1 focus:outline-none" placeholder="Password*">
       <button @click="login" class="p-3 bg-green-400 block rounded my-3">Sign Up</button>
-      <p class="text-red-500" v-html="loginError"></p>
+      <p class="text-red-500" v-html="formError"></p>
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@ export default {
       email: '',
       username: '',
       password: '',
-      loginError: ''
+      formError: ''
     }
   },
   computed: {
@@ -41,6 +41,10 @@ export default {
   },
   methods: {
     login() {
+      if (!this.name || !this.email || !this.password || !this.username) {
+        this.formError = "Please, fill in all fields"
+        return;
+      }
       this.axios.post('/auth/register', {
         name: this.name,
         email: this.email,
@@ -55,10 +59,10 @@ export default {
         else {
           this.username = ''
           this.password = ''
-          this.loginError = res.data.message
+          this.formError = res.data.message
         }
       }).catch(e => {
-        this.loginError = JSON.stringify(e)
+        this.formError = JSON.stringify(e)
       })
     }
   }

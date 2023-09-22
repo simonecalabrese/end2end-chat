@@ -7,8 +7,8 @@ import { UserModule } from './user/user.module';
 import { MessageModule } from './message/message.module';
 
 @Module({
-  imports: [AuthModule, UserModule, MongooseModule.forRoot('mongodb://localhost/end2end-chat-api'), MessageModule],
+  imports: [AuthModule, UserModule, MongooseModule.forRoot(process.env.MONGO_DB_URL), MessageModule],
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule {}
+export class AppModule { }
