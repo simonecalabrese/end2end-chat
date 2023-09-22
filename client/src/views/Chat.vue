@@ -97,9 +97,9 @@ export default {
     },
     socketEvents() {
       const app = this
+      // emit user connection event
       app.socket.emit('User connected', { username: app.user.username, id: app.user._id })
-      console.log("Initializing socket listeners")
-      // receive private message
+      // incoming event whene the receiver sends a new message
       app.socket.on('private message', async (msg) => {
         try {
           let res = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, app.privateKeyFormatted, app.Buffer.from(msg.text, 'base64'))
@@ -107,13 +107,11 @@ export default {
           app.messages.push(msg)
           setTimeout(() => app.$refs.messageList.scrollTop = app.$refs.messageList.clientHeight + 99999, 100)
         }
-        catch {
-          console.log(".")
-        }
+        catch { }
       })
 
-      // typing event
-      app.socket.on('private typing', (test) => {
+      // incoming event whene the receiver is typing
+      app.socket.on('private typing', () => {
         app.typingStatus = true;
         clearTimeout(app.tout);
         app.tout = setTimeout(() => {
@@ -128,7 +126,9 @@ export default {
     async sendMessage() {
       const app = this
       if (app.messageToSend.length <= app.maxMessageLength) {
+        // encrypt message to send using receiver public key
         const encryptedText = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, app.receiverPublicKeyFormatted, app.Buffer.from(app.messageToSend, 'utf8'));
+        // encrypt message to send using sender public key
         const encryptedTextCopy = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, app.publicKeyFormatted, app.Buffer.from(app.messageToSend, 'utf8'));
 
         const res = await app.axios.post('/messages', {
@@ -153,7 +153,7 @@ export default {
       }
     },
     str2ab(str) {
-      //Convert a string into an ArrayBuffer
+      // convert a string into an ArrayBuffer
       const buf = new ArrayBuffer(str.length);
       const bufView = new Uint8Array(buf);
       for (let i = 0, strLen = str.length; i < strLen; i++) {
@@ -168,7 +168,7 @@ export default {
       that will resolve to a CryptoKey representing the private key.
       */
       const app = this
-      // fetch the part of the PEM string between header and footer
+      // fetch the PEM string part between header and footer
       const pemHeader = "-----BEGIN PRIVATE KEY-----";
       const pemFooter = "-----END PRIVATE KEY-----";
       let pemContents = pem.substring(pemHeader.length, pem.length - pemFooter.length).split(/\s+/).join('').replace(/\s/g, '');
@@ -189,14 +189,15 @@ export default {
           ["decrypt"]
         )
 
-        // saving formatted imported private key
+        // save formatted imported private key as CryptoKey
         app.privateKeyFormatted = res
+        // decrypt all sent/received messages in the chat
         app.messages.forEach(async el => {
           try {
             const dcrptdTxt = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, app.privateKeyFormatted, app.Buffer.from(el.text, 'base64'));
             el.text = app.Buffer.from(dcrptdTxt).toString()
           }
-          catch { console.log(".") }
+          catch { }
         })
         setTimeout(() => {
           if (app.$refs.messageList)
@@ -204,25 +205,20 @@ export default {
         })
       }
       catch (e) {
-        alert(JSON.stringify(e))
+        alert("Something went wrong...", JSON.stringify(e))
       }
     },
-    async importPersonalPublicKey(pem) {
+    async importPublicKey(pem) {
       /*
       Import a PEM encoded RSA private key, to use for RSA-PSS signing.
       Takes a string containing the PEM encoded key, and returns a Promise
       that will resolve to a CryptoKey representing the private key.
       */
       const app = this
-      // fetch the part of the PEM string between header and footer
+      // fetch PEM string part between header and footer
       const pemHeader = "-----BEGIN PUBLIC KEY-----";
       const pemFooter = "-----END PUBLIC KEY-----";
       let pemContents = pem.substring(pemHeader.length, pem.length - pemFooter.length).split(/\s+/).join('').replace(/\s/g, '');
-      // base64 decode the string to get the binary data
-      //let pemlength = pemContents.length
-      //const binaryDerString = window.atob(pemContents.substr(0,pemlength-1));
-      // // convert from a binary string to an ArrayBuffer
-      // const binaryDer = app.str2ab(binaryDerString);
       try {
         const res = await window.crypto.subtle.importKey(
           "spki",
@@ -235,76 +231,36 @@ export default {
           ["encrypt"]
         )
 
-        //Saving formatted imported personal public key
-        app.publicKeyFormatted = res
+        // return formatted imported receiver public key as CryptoKey
+        return res
       }
       catch (e) {
-        alert(JSON.stringify(e))
+        alert("Something went wrong...", JSON.stringify(e))
+        return null;
       }
-    },
-    async importReceiverPublicKey(pem) {
-      /*
-      Import a PEM encoded RSA private key, to use for RSA-PSS signing.
-      Takes a string containing the PEM encoded key, and returns a Promise
-      that will resolve to a CryptoKey representing the private key.
-      */
-      const app = this
-      // fetch the part of the PEM string between header and footer
-      const pemHeader = "-----BEGIN PUBLIC KEY-----";
-      const pemFooter = "-----END PUBLIC KEY-----";
-      let pemContents = pem.substring(pemHeader.length, pem.length - pemFooter.length).split(/\s+/).join('').replace(/\s/g, '');
-      // base64 decode the string to get the binary data
-      //let pemlength = pemContents.length
-      //const binaryDerString = window.atob(pemContents.substr(0,pemlength-1));
-      // console.log(binaryDerString)
-      // // convert from a binary string to an ArrayBuffer
-      // const binaryDer = app.str2ab(binaryDerString);
-      // console.log(binaryDer)
-      // console.log(Buffer.from(pemContents, 'base64').buffer)
-      try {
-        const res = await window.crypto.subtle.importKey(
-          "spki",
-          app.Buffer.from(pemContents, 'base64').buffer,
-          {
-            name: "RSA-OAEP",
-            hash: "SHA-256",
-          },
-          true,
-          ["encrypt"]
-        )
-
-        //Saving formatted imported receiver public key
-        app.receiverPublicKeyFormatted = res
-      }
-      catch (e) {
-        alert(JSON.stringify(e))
-      }
-    },
-    changeReceiver() {
-
     }
   },
   async beforeMount() {
     const app = this
     setTimeout(async () => {
-      //Check if username prop exists
+      // check if username route parameter exists
       if (app.username != undefined && app.user.friends) {
         app.receiverSelected = app.user.friends.find(el => el.username == app.username)
-        await app.importReceiverPublicKey(app.receiverSelected.public_key)
-        await app.getMessages()
-        //Import private key
-        app.user.private_key = localStorage.getItem('private_key')
-        try {
-          await app.importPrivateKey(app.user.private_key)
-          await app.importPersonalPublicKey(app.user.public_key)
+        if (app.receiverSelected) {
+          app.receiverPublicKeyFormatted = await app.importPublicKey(app.receiverSelected.public_key)
+          await app.getMessages()
+          // import private key
+          app.user.private_key = localStorage.getItem('private_key')
+          try {
+            await app.importPrivateKey(app.user.private_key)
+            app.publicKeyFormatted = await app.importPublicKey(app.user.public_key)
+          }
+          catch { }
+          app.socketEvents()
+        } else {
+          app.$router.push({ name: 'PageNotFound' })
         }
-        catch {
-          console.log(".")
-        }
-        app.socketEvents()
-      }
-      else {
-        //TO REMOVE
+      } else {
         app.$router.push({ name: 'PageNotFound' })
       }
       app.pageLoading = false
