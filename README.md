@@ -4,6 +4,11 @@
   - [2.2. Directory structure](#directory-structure)
   - [2.3. Configuration](#configuration)
   - [2.4. Start the Application](#start-the-application)
+- [3. End-to-end communication](#end-to-end-communication)
+  - [3.1. User Registration](#user-registration)
+  - [3.2. User Login](#user-login)
+  - [3.3. Friend request](#friend-request)
+  - [3.4. Chat](#chat)
 
 ## Introduction
 This project represents a real-time chat application where registered users can send messages to their friends using end-to-end communication.
@@ -73,3 +78,21 @@ yarn
 # or npm run dev
 yarn dev
 ```
+
+## End-to-end communication
+### User Registration
+During registration, the user needs to create a strong password that will be used to encrypt a just generated [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) [Private key](https://en.wikipedia.org/wiki/Public-key_cryptography) which, with the [Public](https://en.wikipedia.org/wiki/Public-key_cryptography) one and can chat togheter. one  will be stored with the user's information.
+
+### User Login
+When a user logs in, the client fetches from the server all the user's data including the encrypted Private key and uses the just insert password to decrypt the key and save it into the localStorage of the browser. It will be pivotal to decrypt all chat messages.
+
+### Friend request
+In order to message with a registered user, you need to send a friend request first. If the invited user accepts your request, you will both receive each other's [Public key](https://en.wikipedia.org/wiki/Public-key_cryptography) and can chat togheter.
+> **Note:** The **Public key** will never be encrypted and can also be published because it only encrypts all the messages to send.
+
+### Chat
+You can chat with your friends because you know their **Public key**. When you want to send a message, the client prepares two messages to send to the server:
+  - a message encrypted with *your* Public key;
+  - a message encrypted with *your friend/receiver* Public key.
+
+Therefore for each message sent, one copy can be read only by you and the other only by your friend.

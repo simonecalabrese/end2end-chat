@@ -22,6 +22,7 @@ export class UserService {
     if (user.password.length === 32) {
       secretKey = user.password
     }
+    // TODO 8 as minimum length is only for testing purposes
     if (user.password.length < 8) {
       return { message: "Your password must be at least 8 characters", error: true }
     }
