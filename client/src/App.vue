@@ -156,16 +156,3 @@ export default {
   }
 }
 </script>
-
-<style>
-footer {
-  position: fixed;
-  bottom: 0;
-  padding: .2rem .5rem;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, .5);
-  backdrop-filter: blur(1px);
-  color: white;
-}
-</style>

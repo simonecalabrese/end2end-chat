@@ -45,21 +45,6 @@
     </div>
   </div>
 </template>
-<style lang="css">
-.fa-spinner {
-  animation: spinning .56s ease-in-out infinite;
-}
-
-@keyframes spinning {
-  from {
-    transform: rotateZ(0);
-  }
-
-  to {
-    transform: rotateZ(360deg);
-  }
-}
-</style>
 <script>
 import { io } from "socket.io-client";
 import { mapGetters } from 'vuex'

@@ -37,34 +37,6 @@
     </div>
   </div>
 </template>
-<style lang="css">
-.chat-container {
-  height: calc(100vh - 118px);
-  max-width: unset !important;
-  overflow-y: auto;
-}
-
-.messages_list {
-  height: calc(100vh - 180px);
-  padding-top: 60px;
-}
-
-.message {
-  background: rgb(188, 255, 222);
-  word-break: break-word;
-}
-
-.loading-overlay::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, .75);
-  z-index: 1;
-}
-</style>
 <script>
 import { mapGetters } from 'vuex'
 import { io } from "socket.io-client";

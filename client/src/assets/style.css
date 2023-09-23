@@ -1,0 +1,59 @@
+html,
+body {
+    width: 100vw;
+    overflow-x: hidden;
+}
+
+.chat-container {
+    height: calc(100vh - 118px);
+    max-width: unset !important;
+    overflow-y: auto;
+}
+
+.messages_list {
+    height: calc(100vh - 180px);
+    padding-top: 60px;
+}
+
+.message {
+    background: rgb(188, 255, 222);
+    word-break: break-word;
+}
+
+.loading-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, .75);
+    z-index: 1;
+}
+
+.fa-spinner {
+    animation: spinning .56s ease-in-out infinite;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    padding: .2rem .5rem;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, .5);
+    backdrop-filter: blur(1px);
+    color: white;
+}
+
+/* Animations */
+
+@keyframes spinning {
+    from {
+        transform: rotateZ(0);
+    }
+
+    to {
+        transform: rotateZ(360deg);
+    }
+}
