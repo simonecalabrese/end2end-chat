@@ -42,7 +42,7 @@ export default {
   methods: {
     login() {
       if (!this.name || !this.email || !this.password || !this.username) {
-        this.formError = "Please, fill in all fields"
+        this.formError = "Please, fill in all the fields"
         return;
       }
       this.axios.post('/auth/register', {

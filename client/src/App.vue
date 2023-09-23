@@ -86,7 +86,8 @@
     </nav>
     <router-view />
     <footer>
-      <p class="text-sm">made by <a href="https://github.com/simonecalabrese" target="_blank"><b>Simone Calabrese</b></a></p>
+      <p class="text-sm">made by <a href="https://github.com/simonecalabrese" target="_blank"><b>Simone Calabrese</b></a>
+      </p>
     </footer>
   </div>
 </template>
@@ -124,6 +125,7 @@ export default {
       localStorage.removeItem('access_token')
       localStorage.removeItem('private_key')
       localStorage.removeItem('user')
+      this.user = {}
       if (this.$route.name !== 'Login')
         this.$router.push({ name: 'Login' })
     }

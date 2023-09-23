@@ -6,33 +6,20 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 
 @Controller('messages')
 export class MessageController {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(private readonly messageService: MessageService) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createMessageDto : CreateMessageDto, @Request() req) {
+  /* Send a new message to a friend */
+  async create(@Body() createMessageDto: CreateMessageDto, @Request() req) {
     return await this.messageService.create(createMessageDto, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':username')
+  /* Return all the messages of a specific user's chat
+  *  @param :username is the chat's receiver */
   findAll(@Param('username') username: string, @Request() req) {
-    //username == receiver
     return this.messageService.findAll(username, req.user);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.messageService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto) {
-    return this.messageService.update(+id, updateMessageDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.messageService.remove(+id);
   }
 }

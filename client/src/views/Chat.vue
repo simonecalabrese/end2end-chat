@@ -191,7 +191,7 @@ export default {
 
         // save formatted imported private key as CryptoKey
         app.privateKeyFormatted = res
-        // decrypt all sent/received messages in the chat
+        // decrypt all the sent/received messages in the chat
         app.messages.forEach(async el => {
           try {
             const dcrptdTxt = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, app.privateKeyFormatted, app.Buffer.from(el.text, 'base64'));
