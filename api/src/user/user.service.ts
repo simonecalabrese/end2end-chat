@@ -10,23 +10,23 @@ import * as crypto from 'crypto'
 @Injectable()
 export class UserService {
 
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
   async create(user: User): Promise<any> {
     const app = this
-    //SecretKey to encrypt the private_key
+    // using user's password with some random bytes as secretKey  to encrypt the private_key
     let secretKey = ''
-    if(user.password.length > 32) {
-      return {message: "Your password must be max 32 characters!", error: true}
+    if (user.password.length > 32) {
+      return { message: "Your password must be max 32 characters!", error: true }
     }
-    if(user.password.length === 32) {
+    if (user.password.length === 32) {
       secretKey = user.password
     }
-    if(user.password.length < 8) {
-      return {message: "Your password must be at least 8 characters", error: true}
+    if (user.password.length < 8) {
+      return { message: "Your password must be at least 8 characters", error: true }
     }
 
-    //Genereate Key pair
+    // genereate new Key pair
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
       modulusLength: 2048,
       publicKeyEncoding: {
@@ -38,24 +38,24 @@ export class UserService {
         format: 'pem',
       }
     });
-    //Password
+    // hash user's password
     let passwdHashed = ''
-    await bcrypt.hash(user.password, bcryptSaltRounds).then(async function(hash) {
+    await bcrypt.hash(user.password, bcryptSaltRounds).then(async function (hash) {
       passwdHashed = hash
     });
 
-    //Formatting secretkey to 32 bytes from the password
+    // format secretkey to 32 bytes fixed size incorporating the user's password
     let randomString24chars = Buffer.from(crypto.randomBytes(24)).toString('base64')
-    let addToPass = randomString24chars.slice(0,32-user.password.length)
-    secretKey = user.password+addToPass
+    // random string to add to pass to reach fixed length, it is stored in db (not too safe)
+    let addToPass = randomString24chars.slice(0, 32 - user.password.length)
+    secretKey = user.password + addToPass
 
-
-    //Encrypting private key
+    // encrypt private key with created secretKey
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv('aes-256-ctr', secretKey, iv);
     const encrypted = Buffer.concat([cipher.update(privateKey), cipher.final()]);
 
-    //Create user
+    // create user
     return await new app.userModel({
       name: user.name,
       username: user.username,
@@ -70,10 +70,11 @@ export class UserService {
     }).save()
   }
 
+  /* Return true if `reqPass` and `dbPass` hashes match */
   async hashCompare(reqPass, dbPass) {
     let result = false
-    await bcrypt.compare(reqPass, dbPass).then(function(res) {
-        result = res
+    await bcrypt.compare(reqPass, dbPass).then(function (res) {
+      result = res
     });
     return result
   }
@@ -82,37 +83,39 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
-  async findOne(query:any): Promise<User> {
+  async findOne(query: any): Promise<User> {
     return this.userModel.findOne(query).exec();
   }
 
   async inviteFriend(body, user): Promise<any> {
-    const receiver = await this.userModel.findOne({username: body.username})
-    if(receiver == null) {
-      return {message: "Can't find a user with that username", error: true}
+    const receiver = await this.userModel.findOne({ username: body.username })
+    if (receiver == null) {
+      return { message: "Can't find a user with that username", error: true }
     }
-    else if(receiver.username === user.username) {
-      return {message: "You can't invite yourself", error: true}
+    else if (receiver.username === user.username) {
+      return { message: "You can't invite yourself", error: true }
     }
-    else if(receiver.friends.find(el => el.user_id === user.id) !== undefined) {
-      return {message: "You have already invited him, or he invited you.", error: true}
+    else if (receiver.friends.find(el => el.user_id === user.id) !== undefined) {
+      return { message: "You have already invited him, or he invited you.", error: true }
     }
     else {
-      //Update receiver's friends
-      const reqUser = await this.userModel.findOne({_id: user.id})
-      await this.userModel.updateOne({username: body.username}, { $push: { 
-        friends: {
-          user_id: user.id,
-          username: user.username,
-          public_key: reqUser.public_key,
-          confirmed: false,
-          hasInvited: false,
-          created_at: new Date()
+      // update receiver's friends
+      const reqUser = await this.userModel.findOne({ _id: user.id })
+      await this.userModel.updateOne({ username: body.username }, {
+        $push: {
+          friends: {
+            user_id: user.id,
+            username: user.username,
+            public_key: reqUser.public_key,
+            confirmed: false,
+            hasInvited: false,
+            created_at: new Date()
+          }
         }
-      }})
+      })
 
-      //Update and return user's friends
-      let res = await this.userModel.findOne({username: user.username})
+      // update and return user's friends
+      let res = await this.userModel.findOne({ username: user.username })
       const friend = {
         user_id: receiver.id,
         username: receiver.username,
@@ -123,38 +126,39 @@ export class UserService {
       }
       res.friends.push(friend)
       await res.save()
-      
+
       return friend
     }
   }
 
+  /* Accept a received friend request. */
   async acceptInvite(body, user) {
-    let receiver = await this.userModel.findOne({username: body.username})
+    let receiver = await this.userModel.findOne({ username: body.username })
     let userInReceiverFriends = receiver.friends.find(el => el.username == user.username)
-    if(receiver == null) {
-      return {message: "Can't find a user with that username", error: true}
+    if (receiver == null) {
+      return { message: "Can't find a user with that username", error: true }
     }
-    else if(userInReceiverFriends.hasInvited === false) {
-      return {message: "Can't auto-accept your invite", error:true}
+    else if (userInReceiverFriends.hasInvited === false) {
+      return { message: "You can't accept your invite", error: true }
     }
-    else if(userInReceiverFriends === undefined) {
-      return {message: "That user has never invited you.", error: true}
+    else if (userInReceiverFriends === undefined) {
+      return { message: "That user has never invited you.", error: true }
     }
-    else if(userInReceiverFriends.confirmed === true) {
-      return {message: "You are already friends!", error: true}
+    else if (userInReceiverFriends.confirmed === true) {
+      return { message: "You are already friends!", error: true }
     }
     else {
-      //Update receiver's friends
+      // update receiver's friends
       userInReceiverFriends.confirmed = true
       receiver.markModified('friends');
       await receiver.save()
 
-      //Update and return user's 
-      let res = await this.userModel.findOne({username: user.username})
+      // update and return user's 
+      let res = await this.userModel.findOne({ username: user.username })
       res.friends.find(el => el.username == body.username).confirmed = true
       res.markModified('friends');
       await res.save()
-      
+
       return res.friends
     }
   }
