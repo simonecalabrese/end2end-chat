@@ -84,11 +84,11 @@ yarn dev
 During registration, the user needs to create a strong password that will be used to encrypt a just generated [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) [Private key](https://en.wikipedia.org/wiki/Public-key_cryptography) which, with the [Public](https://en.wikipedia.org/wiki/Public-key_cryptography) one and can chat togheter. one  will be stored with the user's information.
 
 ### User Login
-When a user logs in, the client fetches from the server all the user's data including the encrypted Private key and uses the just insert password to decrypt the key and save it into the localStorage of the browser. It will be pivotal to decrypt all chat messages.
+When a user logs in, the client fetches from the server all the user's data including the encrypted Private key and uses the just insert password to decrypt the key and save it into the localStorage of the browser. It will be fundamental to decrypt all chat messages.
 
 ### Friend request
 In order to message with a registered user, you need to send a friend request first. If the invited user accepts your request, you will both receive each other's [Public key](https://en.wikipedia.org/wiki/Public-key_cryptography) and can chat togheter.
-> **Note:** The **Public key** will never be encrypted and can also be published because it only encrypts all the messages to send.
+> ℹ️ The **Public key** will never be encrypted and can also be published because it only encrypts all the messages to send.
 
 ### Chat
 You can chat with your friends because you know their **Public key**. When you want to send a message, the client prepares two messages to send to the server:
