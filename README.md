@@ -9,6 +9,7 @@
   - [3.2. User Login](#user-login)
   - [3.3. Friend request](#friend-request)
   - [3.4. Chat](#chat)
+- [4. Future Improvements](#future-improvements)
 
 ## Introduction
 This project represents a real-time chat application where registered users can send messages to their friends using end-to-end communication.
@@ -96,3 +97,6 @@ You can chat with your friends because you know their **Public key**. When you w
   - a message encrypted with *your friend/receiver* Public key.
 
 Therefore for each message sent, one copy can be read only by you and the other only by your friend.
+
+## Future Improvements
+- Create a **secret key** shared between sender and receiver for each conversation to save **50%** of the space when storing messages and eliminate the need to save two copies for each message.
