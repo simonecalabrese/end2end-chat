@@ -89,7 +89,7 @@ When a user logs in, the client fetches from the server all the user's data incl
 
 ### Friend request
 In order to message with a registered user, you need to send a friend request first. If the invited user accepts your request, you will both receive each other's [Public key](https://en.wikipedia.org/wiki/Public-key_cryptography) and can chat togheter.
-> ℹ️ The **Public key** will never be encrypted and can also be published because it only encrypts all the messages to send.
+> :warning: The **Public key** will never be encrypted and can also be published because it only encrypts all the messages to send.
 
 ### Chat
 You can chat with your friends because you know their **Public key**. When you want to send a message, the client prepares two messages to send to the server:
