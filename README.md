@@ -12,7 +12,7 @@
 - [4. Future Improvements](#future-improvements)
 
 ## Introduction
-This project represents a real-time chat application where registered users can send messages to their friends using end-to-end communication.
+This project consists of a real-time chat application where registered users can send messages to their friends using end-to-end communication.
 
 ## Getting Started
 ### Requirements
@@ -31,7 +31,7 @@ You should have installed:
   - `client/.env.example` stores all of the client's configuration supported variables.
 
 ### Configuration
-If you have already installed Mongo and are running an instance of it, you can configure the API server enviroment variables in order to start it correctly.
+If you have already installed Mongo and you're running an instance of it, you can configure the API server enviroment variables in order to start it correctly.
 Move inside `api` directory, copy the `.env.example` file, rename it `.env` and edit it with your custom values.
 ```sh
 # JWT secret used from the server to sign generated tokens
@@ -82,7 +82,7 @@ yarn dev
 
 ## End-to-end communication
 ### User Registration
-During registration, the user needs to create a strong password that will be used to encrypt a just generated [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) [Private key](https://en.wikipedia.org/wiki/Public-key_cryptography) which, with the [Public](https://en.wikipedia.org/wiki/Public-key_cryptography) one and can chat togheter. one  will be stored with the user's information.
+During registration, the user needs to create a strong password that will be used to encrypt a just generated [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) [Private key](https://en.wikipedia.org/wiki/Public-key_cryptography) which, with the [Public](https://en.wikipedia.org/wiki/Public-key_cryptography) one can chat togheter. one  will be stored with the user's information.
 
 ### User Login
 When a user logs in, the client fetches from the server all the user's data including the encrypted Private key and uses the just insert password to decrypt the key and save it into the localStorage of the browser. It will be fundamental to decrypt all chat messages.
