@@ -12,7 +12,9 @@
 - [4. Future Improvements](#future-improvements)
 
 ## Introduction
-This project consists of a real-time chat application where registered users can send messages to their friends using end-to-end communication.
+A real-time chat application that allows registered users to send messages to their friends with end-to-end encryption.
+
+> **Note:** This project was originally developed in 2021 and is no longer maintained.
 
 ## Getting Started
 ### Requirements
@@ -24,21 +26,19 @@ You should have installed:
 ### Directory structure
 - `api` contains all of the API server's files directory;
   - `api/socketio-server` is the [Socket.io](https://socket.io/) server directory for real-time communication;
-  - `api/src` contains all of the Server core files;
-  - `api/.env.example` contains all of the NestJS Server's configuration supported variables.
+  - `api/src` contains all server core's files;
+  - `api/.env.example` NestJS Server's configuration enviroment variables.
 - `client` Vue client application folder;
-  - `client/src` contains all of the Vue client's core files;
-  - `client/.env.example` stores all of the client's configuration supported variables.
 
 ### Configuration
-If you have already installed Mongo and you're running an instance of it, you can configure the API server enviroment variables in order to start it correctly.
+If you have already installed and started MongoDB, you can configure the API server enviroment variables in order to start it correctly.
 Move inside `api` directory, copy the `.env.example` file, rename it `.env` and edit it with your custom values.
 ```sh
 # JWT secret used from the server to sign generated tokens
 JWT_SECRET=create a complex string without spaces
 # Expiry time of the generated tokens
 JWT_EXPIRY_IN_SECONDS=180
-# Rounds to compute for every single generated BCrypt hash.
+# Rounds to apply for generating BCrypt hash.
 BCRYPT_SALT_ROUNDS=10
 # Your Mongo connection string
 MONGO_DB_URL=mongodb://localhost/<db_name>
@@ -48,7 +48,7 @@ MONGO_DB_URL=mongodb://localhost/<db_name>
 Open 3 terminals:
 ```sh
 # start the API server
-# make sure you have Mongo running first
+# make sure you have an instance of Mongo running first
 cd api
 
 # or npm install
@@ -89,7 +89,8 @@ When a user logs in, the client fetches from the server all the user's data incl
 
 ### Friend request
 In order to message with a registered user, you need to send a friend request first. If the invited user accepts your request, you will both receive each other's [Public key](https://en.wikipedia.org/wiki/Public-key_cryptography) and can chat togheter.
-> :warning: The **Public key** will never be encrypted and can also be published because it only encrypts all the messages to send.
+> [!NOTE]  
+> The **Public key** will never be encrypted and can also be published because it only encrypts all the messages to send.
 
 ### Chat
 You can chat with your friends because you know their **Public key**. When you want to send a message, the client prepares two messages to send to the server:
